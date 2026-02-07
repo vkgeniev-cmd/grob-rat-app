@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +21,13 @@ interface LicenseActivationPageProps {
 export function LicenseActivationPage({ user, onActivated, onLogout }: LicenseActivationPageProps) {
   const [licenseKey, setLicenseKey] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  // Auto-activate for admin users
+  React.useEffect(() => {
+    if (user.username === "ORIXMAN" || user.is_admin) {
+      onActivated()
+    }
+  }, [user, onActivated])
 
   const handleActivate = async () => {
     if (!licenseKey.trim()) {
