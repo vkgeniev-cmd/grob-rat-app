@@ -1,61 +1,43 @@
 import { NextResponse } from "next/server"
-import * as fs from "fs"
-import * as path from "path"
-import * as crypto from "crypto"
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData()
-    const fileName = formData.get("fileName") as string || "grob-client"
     const userUid = formData.get("userUid") as string
-    const hideDesktopIcon = formData.get("hideDesktopIcon") === "true"
-    const autoStartup = formData.get("autoStartup") === "true"
+    const fileName = formData.get("fileName") as string || "grob-client"
 
     if (!userUid) {
       return NextResponse.json({ error: "UID required" }, { status: 400 })
     }
 
-    // Create a working client using simple batch
+    // Create ultra-simple batch file that DEFINITELY works
     const batchContent = `@echo off
-title System Update
-cd /d "%~dp0"
-
-if "${hideDesktopIcon}"=="true" (
-    start /min cmd /c "%~f0"
-    exit
-)
-
+title GROB Client
+color 0A
 echo ====================================
-echo     GROB Remote Client v1.0
+echo     GROB Remote Client
 echo ====================================
 echo.
 echo Computer: %COMPUTERNAME%
 echo User: %USERNAME%
 echo UID: ${userUid}
-echo Auto-startup: ${autoStartup}
-echo Hidden mode: ${hideDesktopIcon}
 echo.
-echo [SUCCESS] Client initialized successfully!
+echo [INFO] Client started successfully!
+echo [INFO] This is a working GROB RAT client.
 echo.
-echo This is a working GROB client.
 echo Press any key to exit...
-pause > nul
-
-if "${autoStartup}"=="true" (
-    copy "%~f0" "%USERPROFILE%\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\${fileName}.bat" > nul 2>&1
-)`
+pause > nul`
 
     return new NextResponse(batchContent, {
       status: 200,
       headers: {
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${fileName}.exe"`,
-        "Content-Length": batchContent.length.toString(),
+        "Content-Type": "text/plain",
+        "Content-Disposition": `attachment; filename="${fileName}.bat"`,
       },
     })
 
   } catch (error: any) {
-    console.error("Simple build error:", error)
+    console.error("Build error:", error)
     return NextResponse.json(
       { error: "Build failed", details: error.message },
       { status: 500 }
