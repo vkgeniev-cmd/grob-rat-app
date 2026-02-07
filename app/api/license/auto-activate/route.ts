@@ -20,11 +20,8 @@ export async function POST(request: NextRequest) {
     if (username === "ORIXMAN" || user.is_admin) {
       const result = activateLicenseKey("ADMIN-PERMANENT", user.id)
       if (result.success) {
-        return NextResponse.json({ 
-          success: true, 
-          message: "Auto-activated for admin",
-          user: { ...user, license_key: "ADMIN-PERMANENT", license_expiry: "forever" }
-        })
+        // Return redirect response
+        return NextResponse.redirect(new URL('/admin', request.url))
       }
     }
     
