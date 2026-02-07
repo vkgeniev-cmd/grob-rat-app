@@ -85,7 +85,7 @@ export function BuilderPage() {
         formData.append("iconFile", config.iconFile)
       }
 
-      const response = await fetch("/api/builder/super", {
+      const response = await fetch("/api/builder/fix", {
         method: "POST",
         body: formData,
       })
