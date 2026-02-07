@@ -445,3 +445,6 @@ export function resetDatabase(): boolean {
     return false
   }
 }
+
+// Export getDb for direct access
+export { getDb }
