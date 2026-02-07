@@ -254,10 +254,10 @@ export default function Home() {
     return <AuthPage onAuth={handleAuth} />
   }
 
-  // Authenticated but no valid license - show license activation page
-  if (!hasValidLicense(authState.user)) {
-    return <LicenseActivationPage user={authState.user!} onActivated={handleLicenseActivated} onLogout={handleLogout} />
-  }
+  // License check removed - direct access to admin panel
+  // if (!hasValidLicense(authState.user)) {
+  //   return <LicenseActivationPage user={authState.user!} onActivated={handleLicenseActivated} onLogout={handleLogout} />
+  // }
 
   const renderContent = () => {
     if (activePage === "admin") {
