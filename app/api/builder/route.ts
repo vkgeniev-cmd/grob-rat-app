@@ -9,7 +9,7 @@ import * as crypto from "crypto"
 
 const execAsync = promisify(exec)
 
-const SERVER_WS_URL = process.env.GROB_SERVER_URL || "ws://77.221.148.113:8765"
+const SERVER_WS_URL = process.env.GROB_SERVER_URL || "wss://glistening-mindfulness.up.railway.app"
 
 // t.me/SentinelLinks
 function generateRandomName(): string {
