@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "lint": "eslint .",
-    "start": "next start"
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start --turbopack",
+    "lint": "next lint --turbopack",
+    "deploy": "bash ./auto-deploy.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
