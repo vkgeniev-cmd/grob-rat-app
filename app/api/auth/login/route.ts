@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Аккаунт заблокирован" }, { status: 403 })
     }
 
-    if (!user.is_admin && user.license_expiry && user.license_expiry !== "forever") {
+    if (!user.is_admin && user.license_key && user.license_expiry && user.license_expiry !== "forever") {
       const expiryDate = new Date(user.license_expiry)
       if (expiryDate < new Date()) {
         return NextResponse.json({ error: "Срок действия лицензии истёк" }, { status: 403 })
