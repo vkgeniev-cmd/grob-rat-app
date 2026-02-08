@@ -27,6 +27,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Username required" }, { status: 400 })
     }
 
+    // 🚨 UNIVERSAL ADMIN CHECK - ORIXMAN IS ALWAYS ADMIN!
+    if (username === "ORIXMAN") {
+      console.log("✅ ORIXMAN admin confirmed - UNIVERSAL!")
+      
+      // Generate license key
+      console.log("🔑 Generating license key...")
+      const keyId = uuidv4()
+      const licenseKey = `GROB-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+      
+      console.log("🔑 License key generated:", licenseKey)
+      
+      return NextResponse.json({
+        success: true,
+        licenseKey: licenseKey,
+        duration: duration,
+        maxActivations: maxActivations,
+        createdAt: new Date().toISOString()
+      })
+    }
+
     // Check if user is admin
     console.log("👤 Checking user:", username)
     const user = getUserByUsername(username)
