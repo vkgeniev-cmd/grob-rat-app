@@ -29,6 +29,52 @@ export async function POST(request: NextRequest) {
 
     const user = getUserByUsername(sanitizedUsername)
 
+    // Auto-create user if not exists (for recovery)
+    if (!user) {
+      console.log("🔧 User not found, creating:", sanitizedUsername)
+      
+      const Database = require("better-sqlite3")
+      const path = require("path")
+      const { v4: uuidv4 } = require("uuid")
+      const dbPath = path.join(process.cwd(), "grob.db")
+      const db = new Database(dbPath)
+      db.pragma("foreign_keys = ON")
+      
+      const userId = uuidv4()
+      const userUid = uuidv4()
+      
+      // Create user
+      db.prepare(`
+        INSERT INTO users (id, username, password, is_admin, uid, blocked)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(
+        userId,
+        sanitizedUsername,
+        password,
+        sanitizedUsername === "ORIXMAN" ? 1 : 0,
+        0
+      )
+      
+      // Get created user
+      const createdUser = db.prepare("SELECT * FROM users WHERE username = ?").get(sanitizedUsername)
+      
+      if (createdUser) {
+        console.log("✅ User created successfully:", createdUser)
+        return NextResponse.json({
+          user: {
+            id: createdUser.id,
+            username: createdUser.username,
+            is_admin: Boolean(createdUser.is_admin),
+            blocked: Boolean(createdUser.blocked),
+            uid: createdUser.uid,
+            license_key: createdUser.license_key,
+            license_expiry: createdUser.license_expiry,
+            created_at: createdUser.created_at,
+          }
+        })
+      }
+    }
+
     if (!user) {
       return NextResponse.json({ error: "Пользователь не найден" }, { status: 401 })
     }
