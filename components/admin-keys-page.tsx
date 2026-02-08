@@ -17,11 +17,11 @@ export function AdminKeysPage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    const userStr = sessionStorage.getItem("user")
+    const userStr = sessionStorage.getItem("grob-auth") || sessionStorage.getItem("user")
     if (userStr) {
       try {
-        const userData = JSON.parse(userStr)
-        setUser(userData)
+        const authData = JSON.parse(userStr)
+        setUser(authData.user || authData)
       } catch (e) {
         console.error("Failed to parse user:", e)
       }
