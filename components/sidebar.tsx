@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Palette, Wrench, Settings, LogOut, Monitor, Users, Key, UserPlus } from "lucide-react"
+import { Home, Palette, Wrench, Settings, LogOut, Monitor, Users, Key, UserPlus, TestTube } from "lucide-react"
 import type { User } from "@/app/page"
 import { cn } from "@/lib/utils"
 import type { User as AuthUser } from "@/lib/db"
@@ -9,8 +9,8 @@ interface SidebarProps {
   users: User[]
   selectedUser: User | null
   onSelectUser: (user: User | null) => void
-  activePage?: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth"
-  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth") => void
+  activePage?: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth" | "test-users"
+  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth" | "test-users") => void
   isScanning?: boolean
   onRefresh?: () => void
   currentUser?: AuthUser | null
@@ -154,6 +154,22 @@ export function Sidebar({
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Restore</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onSelectUser(null)
+                  onPageChange?.("test-users")
+                }}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  activePage === "test-users"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                )}
+              >
+                <TestTube className="w-4 h-4" />
+                <span>Test Users</span>
               </button>
 
               <button
