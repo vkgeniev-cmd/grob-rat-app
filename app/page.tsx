@@ -247,9 +247,9 @@ export default function Home() {
     )
   }
 
-  // Not authenticated - show simple login page
+  // Not authenticated - show original login page
   if (!authState?.isAuthenticated) {
-    return <SimpleAuthPage onAuth={handleAuth} />
+    return <AuthPage onAuth={handleAuth} />
   }
 
   // License check removed - direct access to admin panel

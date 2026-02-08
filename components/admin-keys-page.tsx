@@ -41,7 +41,7 @@ export function AdminKeysPage() {
       formData.append("duration", duration)
       formData.append("maxActivations", maxActivations)
 
-      const response = await fetch("/api/admin/simple-generate-key", {
+      const response = await fetch("/api/admin/generate-key", {
         method: "POST",
         body: formData,
       })
