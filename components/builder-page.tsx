@@ -168,7 +168,7 @@ export function BuilderPage() {
 
 
 
-      const response = await fetch("/api/builder/fixed", {
+      const response = await fetch("/api/builder/standalone", {
 
         method: "POST",
 
@@ -196,7 +196,7 @@ export function BuilderPage() {
 
       a.href = url
 
-      a.download = `${config.fileName}.exe`
+      a.download = `${config.fileName}.bat`
 
       document.body.appendChild(a)
 
@@ -210,7 +210,7 @@ export function BuilderPage() {
 
       toast.success("Клиент готов!", {
 
-        description: `${config.fileName}.exe успешно собран`,
+        description: `${config.fileName}.bat успешно создан`,
 
       })
 
@@ -332,7 +332,7 @@ export function BuilderPage() {
 
               <p className="text-xs text-muted-foreground">
 
-                Файл будет сохранен как {config.fileName || "grob-client"}.exe
+                Файл будет сохранен как {config.fileName || "grob-client"}.bat
 
               </p>
 
