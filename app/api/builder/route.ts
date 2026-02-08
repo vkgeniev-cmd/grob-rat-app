@@ -1,5 +1,3 @@
-// t.me/SentinelLinks
-
 import { NextResponse } from "next/server"
 import { exec } from "child_process"
 import { promisify } from "util"
@@ -11,7 +9,6 @@ const execAsync = promisify(exec)
 
 const SERVER_WS_URL = process.env.GROB_SERVER_URL || "wss://glistening-mindfulness.up.railway.app"
 
-// t.me/SentinelLinks
 function generateRandomName(): string {
   return crypto.randomBytes(8).toString("hex")
 }
@@ -52,8 +49,7 @@ export async function POST(request: Request) {
       fs.mkdirSync(distTempDir, { recursive: true })
     }
 
-// t.me/SentinelLinks
-    const tempDir = path.join(distTempDir, `build_${randomName}`)
+const tempDir = path.join(distTempDir, `build_${randomName}`)
     fs.mkdirSync(tempDir, { recursive: true })
 
     // Write modified source
@@ -77,8 +73,7 @@ export async function POST(request: Request) {
       fs.copyFileSync(goSumPath, path.join(tempDir, "go.sum"))
     }
 
-// t.me/SentinelLinks
-    // Check if Go is available
+// Check if Go is available
     try {
       await execAsync("go version")
     } catch {

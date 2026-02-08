@@ -1,6 +1,3 @@
-// t.me/SentinelLinks
-
-// t.me/SentinelLinks
 import { NextResponse } from "next/server"
 import { getUserByUsername, getLicenseKeyByKey, createUser, activateLicenseKey } from "@/lib/db-server"
 
@@ -18,8 +15,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Неверный формат запроса" }, { status: 400 })
     }
 
-// t.me/SentinelLinks
-    const { username, password, licenseKey } = body
+const { username, password, licenseKey } = body
 
     // Validation
     if (!username || !password || !licenseKey) {
@@ -76,8 +72,7 @@ export async function POST(request: Request) {
     // Activate license for user
     const activation = activateLicenseKey(trimmedKey, newUser.id)
 
-// t.me/SentinelLinks
-    if (!activation.success) {
+if (!activation.success) {
       return NextResponse.json({ error: activation.message }, { status: 400 })
     }
 

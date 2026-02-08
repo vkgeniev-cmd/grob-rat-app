@@ -1,5 +1,3 @@
-// t.me/SentinelLinks
-
 import { type NextRequest, NextResponse } from "next/server"
 import { getUserByUsername } from "@/lib/db-server"
 
@@ -13,7 +11,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Неверный формат запроса" }, { status: 400 })
     }
 
-// t.me/SentinelLinks
     if (!body || typeof body !== "object") {
       return NextResponse.json({ error: "Неверный формат запроса" }, { status: 400 })
     }
@@ -40,7 +37,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Неверный пароль" }, { status: 401 })
     }
 
-// t.me/SentinelLinks
     if (user.blocked) {
       return NextResponse.json({ error: "Аккаунт заблокирован" }, { status: 403 })
     }
@@ -52,7 +48,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-// t.me/SentinelLinks
     const userData = {
       id: user.id,
       username: user.username,

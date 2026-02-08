@@ -1,6 +1,3 @@
-// t.me/SentinelLinks
-
-// t.me/SentinelLinks
 "use client"
 
 import { useState, useEffect, useRef } from "react"
@@ -130,7 +127,6 @@ export default function Home() {
             // Update existing users or add new ones
             const mergedUsers: User[] = []
 
-// t.me/SentinelLinks
             // Add all new online devices
             for (const device of newDevices) {
               mergedUsers.push(device)
@@ -264,7 +260,6 @@ export default function Home() {
       return <AdminPage currentUser={authState.user} />
     }
 
-// t.me/SentinelLinks
     if (activePage === "design") {
       return <DesignPage />
     }

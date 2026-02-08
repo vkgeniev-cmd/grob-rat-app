@@ -1,5 +1,3 @@
-// t.me/SentinelLinks
-
 "use client"
 
 import { useState } from "react"
@@ -37,7 +35,6 @@ export function AuthPage({ onAuth }: AuthPageProps) {
       return
     }
 
-// t.me/SentinelLinks
     setIsLoading(true)
 
     try {
@@ -49,7 +46,6 @@ export function AuthPage({ onAuth }: AuthPageProps) {
 
       const data = await response.json()
 
-// t.me/SentinelLinks
       if (response.ok && data.user) {
         toast.success(`Добро пожаловать, ${data.user.username}!`)
         onAuth(data.user)
@@ -292,7 +288,6 @@ export function AuthPage({ onAuth }: AuthPageProps) {
           </Tabs>
         </Card>
 
-// t.me/SentinelLinks
         <p className="text-center text-xs text-muted-foreground/70 mt-8">
           2026 Grob rat. Professional Remote Administration.
         </p>

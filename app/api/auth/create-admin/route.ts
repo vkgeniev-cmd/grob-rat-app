@@ -1,5 +1,3 @@
-// t.me/SentinelLinks
-
 import { type NextRequest, NextResponse } from "next/server"
 import { getUserByUsername, createAdminUser } from "@/lib/db-server"
 
@@ -81,5 +79,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ошибка сервера. Попробуйте позже" }, { status: 500 })
   }
 }
-
-// t.me/SentinelLinks
