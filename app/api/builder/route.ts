@@ -75,8 +75,10 @@ const tempDir = path.join(distTempDir, `build_${randomName}`)
 
 // Check if Go is available
     try {
-      await execAsync("go version")
-    } catch {
+      const { stdout } = await execAsync("go version")
+      console.log("✅ Go version:", stdout.trim())
+    } catch (error: any) {
+      console.error("❌ Go not found:", error)
       return NextResponse.json(
         {
           error: "Go not installed",
@@ -99,18 +101,31 @@ const tempDir = path.join(distTempDir, `build_${randomName}`)
     }
 
     try {
-      await execAsync(`go mod tidy`, {
+      console.log("🔧 Running go mod tidy...")
+      const { stdout: tidyOutput } = await execAsync(`go mod tidy`, {
         timeout: 120000,
         cwd: tempDir,
         env: buildEnv,
       })
+      console.log("✅ go mod tidy completed:", tidyOutput)
 
-      await execAsync(`go build -ldflags="${ldflags}" -o "${outputExe}" main.go`, {
+      console.log("🔧 Building Go executable...")
+      const buildCommand = `go build -ldflags="${ldflags}" -o "${outputExe}" main.go`
+      console.log("🔧 Build command:", buildCommand)
+      
+      const { stdout: buildOutput, stderr: buildStderr } = await execAsync(buildCommand, {
         timeout: 180000,
         cwd: tempDir,
         env: buildEnv,
       })
+      
+      console.log("✅ Build stdout:", buildOutput)
+      if (buildStderr) {
+        console.log("⚠️ Build stderr:", buildStderr)
+      }
     } catch (buildError: any) {
+      console.error("❌ Build failed:", buildError)
+      
       // Cleanup on error
       try {
         fs.rmSync(tempDir, { recursive: true, force: true })
@@ -120,6 +135,8 @@ const tempDir = path.join(distTempDir, `build_${randomName}`)
         {
           error: "Build failed",
           details: buildError.stderr || buildError.message || "Check Go installation",
+          stdout: buildError.stdout || "",
+          command: buildError.command || "go build"
         },
         { status: 500 },
       )
