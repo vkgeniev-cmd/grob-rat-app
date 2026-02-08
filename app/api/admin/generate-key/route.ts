@@ -2,6 +2,16 @@ import { NextResponse } from "next/server"
 import { createLicenseKey, getUserByUsername } from "@/lib/db-server"
 import { v4 as uuidv4 } from "uuid"
 
+// Import getDb function directly
+function getDb() {
+  const Database = require("better-sqlite3")
+  const path = require("path")
+  const dbPath = path.join(process.cwd(), "grob.db")
+  const db = new Database(dbPath)
+  db.pragma("foreign_keys = ON")
+  return db
+}
+
 export async function POST(request: Request) {
   try {
     console.log("🔑 License key generation started...")
@@ -21,6 +31,43 @@ export async function POST(request: Request) {
     console.log("👤 Checking user:", username)
     const user = getUserByUsername(username)
     console.log("👤 User found:", user)
+    
+    // Special case for ORIXMAN admin
+    if (!user && username === "ORIXMAN") {
+      console.log("🔧 Creating ORIXMAN admin user...")
+      // Create admin user if not exists
+      const adminId = "admin-001"
+      const adminUid = "admin-uid-001"
+      
+      try {
+        getDb().prepare(`
+          INSERT OR IGNORE INTO users (id, username, password, is_admin, uid, license_key, license_expiry, blocked)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          adminId,
+          "ORIXMAN",
+          "180886",
+          1,
+          adminUid,
+          "ADMIN-PERMANENT",
+          "forever",
+          0
+        )
+        
+        console.log("✅ ORIXMAN admin created")
+        // Try to get user again
+        const adminUser = getUserByUsername(username)
+        console.log("👤 Admin user after creation:", adminUser)
+        
+        if (!adminUser || !adminUser.is_admin) {
+          console.log("❌ Still cannot find admin user")
+          return NextResponse.json({ error: "Admin user not found after creation" }, { status: 500 })
+        }
+      } catch (createError) {
+        console.error("❌ Error creating admin user:", createError)
+        return NextResponse.json({ error: "Failed to create admin user" }, { status: 500 })
+      }
+    }
     
     if (!user || !user.is_admin) {
       console.log("❌ Access denied - user not admin or not found")
