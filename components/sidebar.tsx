@@ -138,9 +138,7 @@ export function Sidebar({
             <span>Builder</span>
           </button>
 
-          {isAdmin && (
-            <>
-              <button
+          <button
                 onClick={() => {
                   onSelectUser(null)
                   onPageChange?.("restore")
@@ -172,39 +170,41 @@ export function Sidebar({
                 <span>Test Users</span>
               </button>
 
-              <button
-                onClick={() => {
-                  onSelectUser(null)
-                  onPageChange?.("keys")
-                }}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  activePage === "keys"
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
-                )}
-              >
-                <Key className="w-4 h-4" />
-                <span>Keys</span>
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    onSelectUser(null)
+                    onPageChange?.("keys")
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    activePage === "keys"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  )}
+                >
+                  <Key className="w-4 h-4" />
+                  <span>Keys</span>
+                </button>
+              )}
 
-              <button
-                onClick={() => {
-                  onSelectUser(null)
-                  onPageChange?.("admin")
-                }}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  activePage === "admin"
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
-                )}
-              >
-                <Settings className="w-4 h-4" />
-                <span>Admin</span>
-              </button>
-            </>
-          )}
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    onSelectUser(null)
+                    onPageChange?.("admin")
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    activePage === "admin"
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  )}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Admin</span>
+                </button>
+              )}
         </div>
       </div>
 
