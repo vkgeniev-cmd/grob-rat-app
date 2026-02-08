@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import * as crypto from "crypto"
 
+// In-memory storage for test users
+const testUsers = new Map<string, any>()
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData()
@@ -156,16 +159,57 @@ exit
         },
       })
 
-    } else if (action === "list") {
-      // List existing test users (mock data for now)
-      const testUsers = [
-        { username: "test_user_001", uid: "test-001", status: "online", created_at: new Date().toISOString() },
-        { username: "test_user_002", uid: "test-002", status: "online", created_at: new Date().toISOString() },
-      ]
+    } else if (action === "instant") {
+      // Create instant test user (no file download)
+      const randomName = crypto.randomBytes(8).toString("hex")
+      const testUsername = username || `test_${randomName}`
+      const testUid = `test-${randomName}`
+
+      // Store test user in memory
+      const testUser = {
+        id: testUid,
+        name: testUsername,
+        hostname: `${testUsername}-PC`,
+        status: "online" as const,
+        ip: "127.0.0.1",
+        os: "Windows 10 Test",
+        lastSeen: new Date().toISOString(),
+        hwid: testUid,
+        test_user: true,
+        created_at: new Date().toISOString()
+      }
+
+      testUsers.set(testUid, testUser)
 
       return NextResponse.json({
         success: true,
-        test_users: testUsers
+        message: "Тестовый пользователь создан мгновенно!",
+        test_user: testUser
+      })
+
+    } else if (action === "list") {
+      // List existing test users
+      const usersList = Array.from(testUsers.values())
+      
+      return NextResponse.json({
+        success: true,
+        test_users: usersList
+      })
+
+    } else if (action === "remove") {
+      // Remove test user
+      const removeUid = formData.get("uid") as string
+      if (removeUid && testUsers.has(removeUid)) {
+        testUsers.delete(removeUid)
+        return NextResponse.json({
+          success: true,
+          message: "Тестовый пользователь удалён"
+        })
+      }
+      
+      return NextResponse.json({
+        success: false,
+        message: "Пользователь не найден"
       })
 
     } else {
@@ -179,4 +223,14 @@ exit
       { status: 500 }
     )
   }
+}
+
+export async function GET() {
+  // Return list of test users for polling
+  const usersList = Array.from(testUsers.values())
+  
+  return NextResponse.json({
+    success: true,
+    test_users: usersList
+  })
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { UserPlus, Download, Users, Monitor, PlayCircle, PauseCircle } from "lucide-react"
+import { UserPlus, Download, Users, Monitor, PlayCircle, PauseCircle, Zap } from "lucide-react"
 import { toast } from "sonner"
 
 export function TestUsersPage() {
@@ -15,6 +15,47 @@ export function TestUsersPage() {
     { username: "test_user_001", uid: "test-001", status: "online", created_at: new Date().toISOString() },
     { username: "test_user_002", uid: "test-002", status: "online", created_at: new Date().toISOString() },
   ])
+
+  const handleCreateInstantTestUser = async () => {
+    try {
+      const formData = new FormData()
+      formData.append("action", "instant")
+      formData.append("username", username || "")
+
+      toast.info("Создание мгновенного тестового пользователя...", {
+        description: "Пользователь появится в админке сразу",
+      })
+
+      const response = await fetch("/api/admin/test-users", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error("Ошибка создания тестового пользователя")
+      }
+
+      const result = await response.json()
+      
+      if (result.success) {
+        toast.success("Тестовый пользователь создан!", {
+          description: result.message,
+        })
+
+        // Add to list
+        setTestUsers([...testUsers, result.test_user])
+        setUsername("")
+      } else {
+        throw new Error(result.message || "Ошибка создания")
+      }
+
+    } catch (error) {
+      console.error("Ошибка создания тестового пользователя:", error)
+      toast.error("Ошибка создания", {
+        description: error instanceof Error ? error.message : "Попробуйте снова",
+      })
+    }
+  }
 
   const handleCreateTestUser = async () => {
     try {
@@ -81,6 +122,19 @@ export function TestUsersPage() {
           </p>
         </div>
 
+        <Card className="p-4 bg-green-500/10 border-green-500/20">
+          <div className="flex items-start gap-3">
+            <Zap className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-green-500">Мгновенное создание</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Нажмите "Мгновенный пользователь" и бот появится в админке СРАЗУ!
+                Никаких файлов и запусков - чистая магия!
+              </p>
+            </div>
+          </div>
+        </Card>
+
         <Card className="p-4 bg-blue-500/10 border-blue-500/20">
           <div className="flex items-start gap-3">
             <Monitor className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
@@ -113,23 +167,34 @@ export function TestUsersPage() {
               </p>
             </div>
 
-            <Button
-              onClick={handleCreateTestUser}
-              disabled={isCreating}
-              className="w-full h-12 text-base"
-            >
-              {isCreating ? (
-                <>
-                  <PauseCircle className="w-5 h-5 mr-2 animate-spin" />
-                  Создание...
-                </>
-              ) : (
-                <>
-                  <PlayCircle className="w-5 h-5 mr-2" />
-                  Создать тестового пользователя
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleCreateInstantTestUser}
+                disabled={isCreating}
+                className="flex-1 h-12 text-base bg-green-600 hover:bg-green-700"
+              >
+                <Zap className="w-5 h-5 mr-2" />
+                Мгновенный пользователь
+              </Button>
+
+              <Button
+                onClick={handleCreateTestUser}
+                disabled={isCreating}
+                className="flex-1 h-12 text-base"
+              >
+                {isCreating ? (
+                  <>
+                    <PauseCircle className="w-5 h-5 mr-2 animate-spin" />
+                    Создание...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5 mr-2" />
+                    Скачать .bat
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Card>
 
