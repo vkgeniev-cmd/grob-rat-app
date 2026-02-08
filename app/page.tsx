@@ -10,6 +10,7 @@ import { DesignSettings } from "@/components/design-settings"
 import { AdminPage } from "@/components/admin-page"
 import { BuilderPage } from "@/components/builder-page"
 import { AuthPage } from "@/components/auth-page"
+import { SimpleAuthPage } from "@/components/simple-auth-page"
 import { AdminKeysPage } from "@/components/admin-keys-page"
 import { WelcomePage } from "@/components/welcome-page"
 import { DesignPage } from "@/components/design-page"
@@ -35,7 +36,7 @@ export type User = {
 
 export type TabType = "desktop" | "webcam" | "fun" | "files" | "cmd" | "voice" | "stealer" | "builder" | "design"
 
-export type PageType = "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore"
+export type PageType = "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth"
 
 interface AuthState {
   isAuthenticated: boolean
@@ -246,9 +247,9 @@ export default function Home() {
     )
   }
 
-  // Not authenticated - show login page
+  // Not authenticated - show simple login page
   if (!authState?.isAuthenticated) {
-    return <AuthPage onAuth={handleAuth} />
+    return <SimpleAuthPage onAuth={handleAuth} />
   }
 
   // License check removed - direct access to admin panel

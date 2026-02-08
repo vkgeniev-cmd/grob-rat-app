@@ -9,8 +9,8 @@ interface SidebarProps {
   users: User[]
   selectedUser: User | null
   onSelectUser: (user: User | null) => void
-  activePage?: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore"
-  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore") => void
+  activePage?: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth"
+  onPageChange?: (page: "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore" | "simple-auth") => void
   isScanning?: boolean
   onRefresh?: () => void
   currentUser?: AuthUser | null
