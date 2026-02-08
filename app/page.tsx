@@ -19,6 +19,7 @@ import { VoiceChatTab } from "@/components/voice-chat-tab"
 import { StealerTab } from "@/components/stealer-tab"
 import { Footer } from "@/components/footer"
 import { UsersPage } from "@/components/users-page"
+import { UserRestorePage } from "@/components/user-restore-page"
 import { hasValidLicense, type User as DBUser } from "@/lib/db"
 
 export type User = {
@@ -34,7 +35,7 @@ export type User = {
 
 export type TabType = "desktop" | "webcam" | "fun" | "files" | "cmd" | "voice" | "stealer" | "builder" | "design"
 
-export type PageType = "home" | "design" | "builder" | "admin" | "users" | "keys"
+export type PageType = "home" | "design" | "builder" | "admin" | "users" | "keys" | "restore"
 
 interface AuthState {
   isAuthenticated: boolean
@@ -270,6 +271,10 @@ export default function Home() {
 
     if (activePage === "keys") {
       return <AdminKeysPage />
+    }
+
+    if (activePage === "restore") {
+      return <UserRestorePage />
     }
 
     if (activePage === "users") {
