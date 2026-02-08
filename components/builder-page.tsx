@@ -168,7 +168,7 @@ export function BuilderPage() {
 
 
 
-      const response = await fetch("/api/builder/turbo", {
+      const response = await fetch("/api/builder/fixed", {
 
         method: "POST",
 
