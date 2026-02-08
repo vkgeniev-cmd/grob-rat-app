@@ -337,6 +337,42 @@ export function activateLicenseKey(
   }
 }
 
+// Create License Key function
+export function createLicenseKey(licenseData: {
+  id: string
+  key: string
+  created_by: string
+  created_at: string
+  duration: string
+  max_activations: number
+  activations: number
+  is_active: number
+}): LicenseKey | null {
+  try {
+    const result = getDb().prepare(`
+      INSERT INTO license_keys (id, key, created_by, created_at, duration, max_activations, activations, is_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      licenseData.id,
+      licenseData.key,
+      licenseData.created_by,
+      licenseData.created_at,
+      licenseData.duration,
+      licenseData.max_activations,
+      licenseData.activations,
+      licenseData.is_active
+    )
+
+    if (result.changes > 0) {
+      return getLicenseKeyByKey(licenseData.key)
+    }
+    return null
+  } catch (error) {
+    console.error("Error creating license key:", error)
+    return null
+  }
+}
+
 // News functions
 export interface News {
   id: string
