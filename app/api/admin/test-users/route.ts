@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server"
 import * as crypto from "crypto"
 
-// In-memory storage for test users
-const testUsers = new Map<string, any>()
+// Global test users storage
+declare global {
+  var testUsers: Map<string, any> | undefined
+}
+
+if (!global.testUsers) {
+  global.testUsers = new Map<string, any>()
+}
 
 export async function POST(request: Request) {
   try {
@@ -160,12 +166,12 @@ exit
       })
 
     } else if (action === "instant") {
-      // Create instant test user (no file download)
+      // Create instant test user (connects to main WebSocket)
       const randomName = crypto.randomBytes(8).toString("hex")
       const testUsername = username || `test_${randomName}`
       const testUid = `test-${randomName}`
 
-      // Store test user in memory
+      // Store test user in global storage
       const testUser = {
         id: testUid,
         name: testUsername,
@@ -179,7 +185,7 @@ exit
         created_at: new Date().toISOString()
       }
 
-      testUsers.set(testUid, testUser)
+      global.testUsers!.set(testUid, testUser)
 
       return NextResponse.json({
         success: true,
@@ -189,7 +195,7 @@ exit
 
     } else if (action === "list") {
       // List existing test users
-      const usersList = Array.from(testUsers.values())
+      const usersList = Array.from(global.testUsers!.values())
       
       return NextResponse.json({
         success: true,
@@ -199,8 +205,8 @@ exit
     } else if (action === "remove") {
       // Remove test user
       const removeUid = formData.get("uid") as string
-      if (removeUid && testUsers.has(removeUid)) {
-        testUsers.delete(removeUid)
+      if (removeUid && global.testUsers!.has(removeUid)) {
+        global.testUsers!.delete(removeUid)
         return NextResponse.json({
           success: true,
           message: "Тестовый пользователь удалён"
@@ -227,7 +233,7 @@ exit
 
 export async function GET() {
   // Return list of test users for polling
-  const usersList = Array.from(testUsers.values())
+  const usersList = Array.from(global.testUsers!.values())
   
   return NextResponse.json({
     success: true,
