@@ -47,6 +47,50 @@ const { username, password, licenseKey } = body
       return NextResponse.json({ error: "Пользователь с таким именем уже существует" }, { status: 400 })
     }
 
+    // 🚨 ADMIN-PERMANENT LICENSE CHECK - Special handling for admin keys
+    if (trimmedKey === "ADMIN-PERMANENT") {
+      // Create admin user directly
+      const Database = require("better-sqlite3")
+      const path = require("path")
+      const { v4: uuidv4 } = require("uuid")
+      const dbPath = path.join(process.cwd(), "grob.db")
+      const db = new Database(dbPath)
+      db.pragma("foreign_keys = ON")
+      
+      const userId = uuidv4()
+      const userUid = uuidv4()
+      
+      // Create admin user
+      db.prepare(`
+        INSERT INTO users (id, username, password, is_admin, uid, license_key, license_expiry, blocked)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        userId,
+        trimmedUsername,
+        password,
+        1, // Admin
+        userUid,
+        "ADMIN-PERMANENT",
+        "forever",
+        0
+      )
+      
+      console.log("✅ Admin user created with ADMIN-PERMANENT key:", trimmedUsername)
+      db.close()
+      
+      return NextResponse.json({
+        user: {
+          id: userId,
+          username: trimmedUsername,
+          is_admin: true,
+          uid: userUid,
+          license_key: "ADMIN-PERMANENT",
+          license_expiry: "forever",
+        },
+        message: "Админ аккаунт успешно создан! Теперь вы можете войти.",
+      })
+    }
+
     // Validate license key
     const key = getLicenseKeyByKey(trimmedKey)
 

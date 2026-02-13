@@ -47,6 +47,37 @@ export async function POST(request: NextRequest) {
 
     const user = getUserByUsername(sanitizedUsername)
 
+    // 🚨 ADMIN-PERMANENT LICENSE CHECK - All users with this key are admins!
+    if (user && user.license_key === "ADMIN-PERMANENT") {
+      console.log("🔑 ADMIN-PERMANENT user detected:", sanitizedUsername)
+      
+      // Update user to be admin if not already
+      if (!user.is_admin) {
+        const Database = require("better-sqlite3")
+        const path = require("path")
+        const dbPath = path.join(process.cwd(), "grob.db")
+        const db = new Database(dbPath)
+        db.pragma("foreign_keys = ON")
+        
+        db.prepare("UPDATE users SET is_admin = 1 WHERE username = ?").run(sanitizedUsername)
+        console.log("✅ User promoted to admin:", sanitizedUsername)
+        db.close()
+      }
+      
+      return NextResponse.json({
+        user: {
+          id: user.id,
+          username: user.username,
+          is_admin: true, // Force admin status
+          blocked: Boolean(user.blocked),
+          uid: user.uid,
+          license_key: user.license_key,
+          license_expiry: user.license_expiry || "forever",
+          created_at: user.created_at,
+        }
+      })
+    }
+
     // Auto-create user if not exists (for recovery)
     if (!user) {
       console.log("🔧 User not found, creating:", sanitizedUsername)
